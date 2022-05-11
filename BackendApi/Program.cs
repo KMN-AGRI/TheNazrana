@@ -1,0 +1,78 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SharedModel.Contexts;
+using SharedModel.Helpers;
+using SharedModel.Repository;
+using SharedModel.Servers;
+using SharedModel.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+var services = builder.Services;
+
+services.AddScoped<IAuthRepository, AuthRepository>();
+services.AddScoped<IMailService, MailService>();
+services.AddScoped<IUserRepository, UserRepository>();
+
+
+
+services.AddIdentity<Appuser, IdentityRole>(s =>
+{
+    s.User.RequireUniqueEmail = true;
+    s.SignIn.RequireConfirmedEmail = true;
+})
+                .AddEntityFrameworkStores<MainContext>()
+                .AddDefaultTokenProviders();
+
+services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.Name = "__auth";
+
+    ////options.Cookie.Domain = ".localhost";
+    //if (!env.IsDevelopment())
+    //    options.Cookie.Domain = ".dealsonopenbox.com"; // ".mydomain.com"
+
+    options.Cookie.HttpOnly = false;
+
+    options.ExpireTimeSpan = TimeSpan.FromDays(5 * 30);
+    options.SlidingExpiration = true;
+    //options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+
+    options.LoginPath = new PathString("/Login");
+    options.LogoutPath = new PathString("/Singout");
+    options.AccessDeniedPath = new PathString("/Account/Login");
+
+
+});
+
+builder.Services.AddControllers();
+
+
+services.AddDbContextPool<MainContext>(s => s.UseSqlServer(Settings.databaseString));
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment()||true)
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+

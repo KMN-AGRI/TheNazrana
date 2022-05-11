@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Servers\" />
+    <None Remove="Clients\" />
+    <None Remove="Contexts\" />
+    <None Remove="Services\" />
+    <None Remove="Extensions\" />
+    <None Remove="Helpers\" />
+    <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Microsoft.AspNetCore.Mvc.Core" />
+    <None Remove="Clients\Shared\" />
+    <None Remove="Clients\MainSite\" />
+    <None Remove="Microsoft.AspNetCore.Identity" />
+    <None Remove="MimeKit" />
+    <None Remove="MailKit" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Servers\" />
+    <Folder Include="Clients\" />
+    <Folder Include="Contexts\" />
+    <Folder Include="Services\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Clients\Shared\" />
+    <Folder Include="Clients\MainSite\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="MimeKit" Version="3.2.0" />
+    <PackageReference Include="MailKit" Version="3.2.0" />
+  </ItemGroup>
+</Project>
