@@ -9,10 +9,12 @@ namespace SharedModel.Repository
 {
 	public interface IAuthRepository
 	{
+		object authProps();
 		Task<ApiResponse> login(LoginModel login);
         Task<ApiResponse> register(RegisterModel register);
 		Task<ApiResponse> forgot(ForgotModel forgot);
 		Task<ApiResponse> reset(ResetModel reset);
+		Task<bool> verify(VerifyToken verify);
 	}
 
 
@@ -32,6 +34,9 @@ namespace SharedModel.Repository
             this.mailService = mailServices;
             this.signInManager = signInManager;
         }
+
+		public object authProps()
+			=> userRepository.Props();
 
 		public async Task<ApiResponse> forgot(ForgotModel forgot)
 		{
@@ -108,6 +113,17 @@ namespace SharedModel.Repository
 				return new ApiResponse(result.Errors.FirstOrDefault().Description);
 
 			return new ApiResponse("Password reset successfully", true);
+
+		}
+
+		public async Task<bool> verify(VerifyToken verify)
+		{
+			var user = await userManager.FindByEmailAsync(verify.user);
+			if (user == null)
+				return false;
+
+			var result = await userManager.ConfirmEmailAsync(user, verify.token);
+			return result.Succeeded;
 
 		}
 	}

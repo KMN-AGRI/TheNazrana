@@ -15,6 +15,7 @@ namespace SharedModel.Repository
 		CartItem getItem(int id);
 		ApiResponse addToCart(ClientCart client);
 		ApiResponse removeCart(int id);
+		void solidateCart(string id);
 	}
 
 	public class CartRepository:ICartRepository
@@ -54,7 +55,7 @@ namespace SharedModel.Repository
 		public ApiResponse addToCart(ClientCart client)
 		{
 			var cart = client.id.HasValue ? getItem(client.id.Value) :
-				new CartItem(context.Products.Find(client.productId), (int)client.quantity);
+				new CartItem(context.Products.Find(client.productId), (int)client.quantity,userRepository.Id());
 
 
 			if (client.id.HasValue)
@@ -89,6 +90,11 @@ namespace SharedModel.Repository
 		public IEnumerable<CartItem> getItems()
 			=> context.CartItems.Where(s => s.User == userRepository.Id() & s.Status != Status.Disabled)
 			.ToList();
+
+		public void solidateCart(string id)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
 

@@ -22,6 +22,9 @@ namespace SharedModel.Servers
 		public List<Mediafile> Medias { get; set; }
 		public DateTime Date { get; set; }
 		public string Category { get; set; }
+		public string SubCategory { get; set; }
+		public string Color { get; set; }
+		public string SKU { get; set; }
 		public List<Keypair> Details { get; set; }
 		public string Tags { get; set; }
 	}

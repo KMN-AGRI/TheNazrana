@@ -36,5 +36,14 @@ namespace SharedModel.Clients.MainSite
 		public string UserId { get; set; }
 	}
 
+    public class VerifyToken
+	{
+        [Required]
+		public string token { get; set; }
+        [Required]
+		public string user { get; set; }
+	}
+
+
 }
 

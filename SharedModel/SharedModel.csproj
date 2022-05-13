@@ -25,6 +25,7 @@
     <None Remove="Microsoft.AspNetCore.Identity" />
     <None Remove="MimeKit" />
     <None Remove="MailKit" />
+    <None Remove="RazorPay.Core" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Servers\" />
@@ -44,5 +45,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="MimeKit" Version="3.2.0" />
     <PackageReference Include="MailKit" Version="3.2.0" />
+    <PackageReference Include="RazorPay.Core" Version="1.0.2" />
   </ItemGroup>
 </Project>

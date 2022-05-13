@@ -16,10 +16,16 @@
 
   <ItemGroup>
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
+    <None Remove="Views\" />
+    <None Remove="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedModel\SharedModel.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
+    <Folder Include="Views\Shared\" />
   </ItemGroup>
 </Project>

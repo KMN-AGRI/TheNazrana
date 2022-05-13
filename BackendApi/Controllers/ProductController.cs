@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SharedModel.Contexts;
+using SharedModel.Helpers;
 using SharedModel.Repository;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -30,7 +31,7 @@ namespace BackendApi.Controllers
 				s.Stock,
 				s.Sold,
 				s.Mrp,
-				s.Medias,
+				Medias=s.Medias.Select(k=>Settings.imageKitUrl +k.ServerName),
 				s.Brand,
 				s.UId,
 				Seller = new

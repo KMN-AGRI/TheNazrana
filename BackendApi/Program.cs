@@ -10,10 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var services = builder.Services;
-
+services.AddCors();
 services.AddScoped<IAuthRepository, AuthRepository>();
 services.AddScoped<IMailService, MailService>();
 services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 
 
@@ -48,7 +49,7 @@ services.ConfigureApplicationCookie(options =>
 
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 
 
 services.AddDbContextPool<MainContext>(s => s.UseSqlServer(Settings.databaseString));
@@ -60,7 +61,12 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
-
+app.UseCors(s =>
+{
+    s.AllowAnyHeader();
+    s.AllowAnyMethod();
+    s.AllowAnyOrigin()
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()||true)
 {
