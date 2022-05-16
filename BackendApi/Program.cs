@@ -16,6 +16,7 @@ services.AddScoped<IMailService, MailService>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IPaymentRepository, PaymentRepository>();
 services.AddScoped<IOrderRepository, OrderRepository>();
+services.AddScoped<ICartRepository, CartRepository>();
 
 
 
