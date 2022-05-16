@@ -11,11 +11,10 @@ namespace SharedModel.Clients.MainSite
 		public string email { get; set; }
 	}
 
-	public class PaymentModel
+	public class ConfirmPayment
 	{
-		public PaymentModel()
-		{
-		}
+		public string rzp_paymentid { get; set; }
+		public string rzp_orderid { get; set; }
 	}
 }
 

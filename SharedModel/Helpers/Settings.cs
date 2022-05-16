@@ -7,6 +7,8 @@ namespace SharedModel.Helpers
         static public string imageKitUrl = "https://ik.imagekit.io/3jw2q3z4w7h";
         static public string baseUrl = "https://api.thenazrana.in";
         static public string frontendUrl = "https://thenazrana.in";
+
+
         #region MailCredential
         static public string MailServer = "mail.dealsonopenbox.com";
         static public string MailUserName = "no-reply@dealsonopenbox.com";

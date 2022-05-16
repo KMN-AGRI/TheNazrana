@@ -28,18 +28,32 @@ namespace BackendApi.Controllers
 			var resp = new SearchResponse();			
 			var query = context.Products.AsQueryable();
 
+			int startingPosition = (search.page - 1) * 12;
+
+
+			if (!string.IsNullOrEmpty(search.query))
+				query = query.Where(s => s.Title.Contains(search.query) || s.Description.Contains(search.query));
+
+
+
 			resp.total = await query.CountAsync();
-			resp.items = query
+			resp.items = await query
 				.Select(s => new SearchProduct
 				{
+					Id=s.UId,
 					brand=s.Brand,
 					mrp=s.Mrp,
 					price=s.Price,
 					discount = (s.Mrp - s.Price) / s.Mrp * 100,
 					title=s.Title,
 					image = s.Medias.Select(k => Settings.imageKitUrl + k.ServerName).FirstOrDefault()
-				}).ToList();
+				})
+				.Skip(startingPosition).Take(12).ToListAsync();
 
+			resp.hasMore = resp.items.Count() != 12;
+			resp.nextPage = resp.hasMore ? search.page + 1 : search.page;
+			resp.curRange = $"Showing {startingPosition} - {startingPosition + 12}";
+			
 
 
 			return Ok(resp);

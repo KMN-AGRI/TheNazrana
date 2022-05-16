@@ -4,6 +4,7 @@ using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
 using SharedModel.Helpers;
+using SharedModel.Servers;
 
 namespace SharedModel.Services
 {
@@ -11,6 +12,7 @@ namespace SharedModel.Services
 	{
 		bool verifyEmail(string to, string token);
 		bool forgotPassword(string to, string token,string id);
+        bool orderConfirmation(string to, Order order);
 	}
 
 	public class MailService:IMailService
@@ -22,6 +24,11 @@ namespace SharedModel.Services
 		public bool forgotPassword(string to, string token, string id)
 		{
 			throw new NotImplementedException();
+		}
+
+		public bool orderConfirmation(string to, Order order)
+		{
+            return send(to, "Order Confirmed", $"Your Order # {order.Id} Is Confirmed");
 		}
 
 		public bool verifyEmail(string to, string token)

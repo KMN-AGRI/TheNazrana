@@ -11,6 +11,7 @@ namespace SharedModel.Servers
 
 		[Key]
 		public int Id { get; set; }
+		public string Method { get; set; }
 	}
 }
 

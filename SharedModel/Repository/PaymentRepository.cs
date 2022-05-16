@@ -1,6 +1,7 @@
 ﻿using System;
 using Razorpay.Api;
 using SharedModel.Clients.MainSite;
+using SharedModel.Clients.Shared;
 using SharedModel.Helpers;
 
 namespace SharedModel.Repository
@@ -8,15 +9,50 @@ namespace SharedModel.Repository
 	public interface IPaymentRepository
 	{
 		PaymentResponse createOrder();
+        Task<ApiResponse> confirmOrder(ConfirmPayment confirm);
 	}
 
 	public class PaymentRepository:IPaymentRepository
 	{
-		public PaymentRepository()
+        private readonly IOrderRepository orderRepository;
+		public PaymentRepository(IOrderRepository orderRepository)
 		{
+			this.orderRepository = orderRepository;
 		}
 
-		public PaymentResponse createOrder()
+		public Task<ApiResponse> confirmOrder(ConfirmPayment confirm)
+		{
+            try
+            {
+                string paymentId = confirm.rzp_paymentid;
+
+                // This is orderId
+                //string orderId = confirm.rzp_orderid;
+
+                RazorpayClient client = new RazorpayClient(Settings.paymentKeyId, Settings.paymentSecretId);
+
+                Payment payment = client.Payment.Fetch(paymentId);
+
+                // This code is for capture the payment 
+                Dictionary<string, object> options = new Dictionary<string, object>();
+                options.Add("amount", payment.Attributes["amount"]);
+                Payment paymentCaptured = payment.Capture(options);
+                string amt = paymentCaptured.Attributes["amount"];
+                var status = paymentCaptured.Attributes["status"];//captured
+                return orderRepository.completeOrder(confirm.rzp_orderid);
+
+                //return ;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+    
+
+        public PaymentResponse createOrder()
 		{
             Random randomObj = new Random();
             string transactionId = randomObj.Next(10000000, 100000000).ToString();
@@ -35,6 +71,7 @@ namespace SharedModel.Repository
                 id = orderResponse.Attributes["id"],
                 key = Settings.paymentKeyId,
                 amount = 100,
+                email="logoutrd@gmail.com",
                 currency = "INR",
                 name="logoutd"
             };

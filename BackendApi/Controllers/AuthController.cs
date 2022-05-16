@@ -26,9 +26,13 @@ namespace BackendApi.Controllers
         [HttpGet("auth")]
         public IActionResult Index()
 		{
-            //if(!Request.Cookies.ContainsKey("user_id"))
-            //    Response.Cookies.Append("","",)
-            return Ok(repository.authProps());
+            if (!Request.Cookies.ContainsKey("user_id"))
+                Response.Cookies.Append("user_id", "", new CookieOptions()
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(2),
+                });
+
+			return Ok(repository.authProps());
 
         }
 
