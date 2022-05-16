@@ -39,7 +39,9 @@ namespace SharedModel.Repository
                 Payment paymentCaptured = payment.Capture(options);
                 string amt = paymentCaptured.Attributes["amount"];
                 var status = paymentCaptured.Attributes["status"];//captured
+                if(status== "captured")
                 return orderRepository.completeOrder(confirm.rzp_orderid);
+                return Task.FromResult( new ApiResponse("Payment Failed"));
 
                 //return ;
             }
