@@ -44,7 +44,7 @@ services.ConfigureApplicationCookie(options =>
     //options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
 
     options.LoginPath = new PathString("/Login");
-    options.LogoutPath = new PathString("/Singout");
+    options.LogoutPath = new PathString("/Signout");
     options.AccessDeniedPath = new PathString("/Account/Login");
 
 
@@ -71,6 +71,7 @@ app.UseCors(s =>
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()||true)
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
