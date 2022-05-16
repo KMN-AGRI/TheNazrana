@@ -42,7 +42,7 @@ namespace SharedModel.Repository
 			if (id.HasValue)
 				newStock += getItem(id.Value)?.Quantity??0;
 
-			var product = context.Products.Find(productId);
+			var product = context.Products.SingleOrDefault(s=>s.UId==productId);
 
 			if (product.Stock <= newStock)
 				return false;
@@ -55,7 +55,7 @@ namespace SharedModel.Repository
 		public ApiResponse addToCart(ClientCart client)
 		{
 			var cart = client.id.HasValue ? getItem(client.id.Value) :
-				new CartItem(context.Products.Find(client.productId), (int)client.quantity,userRepository.Id());
+				new CartItem(context.Products.SingleOrDefault(s=>s.UId==client.productId), (int)client.quantity,userRepository.Id());
 
 
 			if (client.id.HasValue)
