@@ -28,6 +28,8 @@ namespace BackendApi.Controllers
 			var resp = new SearchResponse();			
 			var query = context.Products.AsQueryable();
 
+
+			search.page = search.page < 1 ? 1 : search.page;
 			int startingPosition = (search.page - 1) * 12;
 
 
@@ -50,7 +52,7 @@ namespace BackendApi.Controllers
 				})
 				.Skip(startingPosition).Take(12).ToListAsync();
 
-			resp.hasMore = resp.items.Count() != 12;
+			resp.hasMore = resp.items.Count() == 12;
 			resp.nextPage = resp.hasMore ? search.page + 1 : search.page;
 			resp.curRange = $"Showing {startingPosition} - {startingPosition + 12}";
 			
