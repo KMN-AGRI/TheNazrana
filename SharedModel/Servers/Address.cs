@@ -5,6 +5,10 @@ namespace SharedModel.Servers
 	{
 		public Address()
 		{
+			this.Name = "";
+			this.Building = "";
+			this.Street = "";
+			this.User = "";
 		}
 
 		public int Id { get; set; }
