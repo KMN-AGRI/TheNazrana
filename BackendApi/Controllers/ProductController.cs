@@ -22,7 +22,7 @@ namespace BackendApi.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public IActionResult Index(string id)
+		public IActionResult Index(int id)
 			=> Ok(context.Products.Select(s => new
 			{
 				s.Title,
@@ -33,7 +33,7 @@ namespace BackendApi.Controllers
 				s.Mrp,
 				Medias=s.Medias.Select(k=>Settings.imageKitUrl +k.ServerName),
 				s.Brand,
-				s.UId,
+				s.Id,
 				Seller = new
 				{
 					name = "The Nazrana"
@@ -43,7 +43,7 @@ namespace BackendApi.Controllers
 					cart = context.CartItems.Count(c => c.Product.Id == s.Id & c.User == userRepository.Id()),
 					wishList = context.Wishlists.Count(c => c.Product.Id == s.Id & c.User == userRepository.Id()),
 				}
-			}).SingleOrDefault(s => s.UId == id));
+			}).SingleOrDefault(s => s.Id == id));
 
 
 
