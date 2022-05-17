@@ -27,7 +27,7 @@ namespace BackendApi.Controllers
         public IActionResult Index()
 		{
             if (!Request.Cookies.ContainsKey("user_id"))
-                Response.Cookies.Append("user_id", "", new CookieOptions()
+                Response.Cookies.Append("user_id", Guid.NewGuid().ToString(), new CookieOptions()
                 {
                     Expires = DateTimeOffset.UtcNow.AddYears(2),
                 });
