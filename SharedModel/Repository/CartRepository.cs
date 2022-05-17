@@ -88,7 +88,9 @@ namespace SharedModel.Repository
 		}
 
 		public IEnumerable<CartItem> getItems()
-			=> context.CartItems.Where(s => s.User == userRepository.Id() & s.Status != Status.Disabled)
+			=> context
+			.CartItems.Where(s => s.User == userRepository.Id() & s.Status != Status.Disabled)
+			.Include(s=>s.Product)
 			.ToList();
 
 		public void solidateCart(string id)
