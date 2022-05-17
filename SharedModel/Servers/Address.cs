@@ -9,6 +9,7 @@ namespace SharedModel.Servers
 			this.Building = "";
 			this.Street = "";
 			this.User = "";
+			this.Mobile = "";
 		}
 
 		public int Id { get; set; }
