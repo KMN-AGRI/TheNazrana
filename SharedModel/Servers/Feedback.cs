@@ -8,9 +8,7 @@ namespace SharedModel.Servers
 		public Feedback()
 		{
 			this.Date = DateTime.UtcNow;
-			this.Message = "";
-			this.User = "";
-			this.TargetId = "";
+			
 		}
 		[Key]
 		public int Id { get; set; }

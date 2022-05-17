@@ -64,7 +64,6 @@ namespace SharedModel.Repository
 			var order = new Order();
 
 			order.Id = Extensions.UtilityExtension.generateId(8);
-			order.Address = new Address();
 			order.Date = DateTime.UtcNow;
 			order.User = userRepository.Id();
 			order.Items = cartItems
@@ -74,7 +73,6 @@ namespace SharedModel.Repository
 					Product = s.Product,
 					Quantity = s.Quantity,
 					OrderId = order.Id,
-					Feedback=new Feedback()
 					
 				}).ToList();
 			order.SubTotal = order.Items.Sum(s => s.Amount * s.Quantity);

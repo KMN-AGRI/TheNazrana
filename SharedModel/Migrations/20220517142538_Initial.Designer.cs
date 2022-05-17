@@ -12,7 +12,7 @@ using SharedModel.Contexts;
 namespace SharedModel.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20220517133648_Initial")]
+    [Migration("20220517142538_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -508,11 +508,10 @@ namespace SharedModel.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("CouponId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
@@ -556,12 +555,11 @@ namespace SharedModel.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -581,7 +579,7 @@ namespace SharedModel.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("FeedbackId")
+                    b.Property<int?>("FeedbackId")
                         .HasColumnType("int");
 
                     b.Property<string>("OrderId")
@@ -852,15 +850,11 @@ namespace SharedModel.Migrations
                 {
                     b.HasOne("SharedModel.Servers.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
 
                     b.HasOne("SharedModel.Servers.Coupon", "Coupon")
                         .WithMany()
-                        .HasForeignKey("CouponId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CouponId");
 
                     b.Navigation("Address");
 
@@ -878,9 +872,7 @@ namespace SharedModel.Migrations
                 {
                     b.HasOne("SharedModel.Servers.Feedback", "Feedback")
                         .WithMany()
-                        .HasForeignKey("FeedbackId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FeedbackId");
 
                     b.HasOne("SharedModel.Servers.Order", null)
                         .WithMany("Items")
