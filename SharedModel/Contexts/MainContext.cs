@@ -24,26 +24,20 @@ namespace SharedModel.Contexts
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Orderitem> OrderItems { get; set; }
+        public DbSet<OrderEvent> OrderEvents { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Wishlist> Wishlists { get; set; }
 
-        public double Distance(float l1, float l2, float l3, float l4)
-            => throw new NotSupportedException();
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-
 
             builder.Entity<Keypair>()
            .Property(application => application.Data)
            .HasConversion(
                 v => JsonConvert.SerializeObject(v),
                 v => JsonConvert.DeserializeObject<object>(v));
-
-
 
             builder.Entity<IdentityRole>(x => x.ToTable("Roles"));
             builder.Entity<IdentityUserRole<string>>(entity => { entity.ToTable("UserRoles"); });

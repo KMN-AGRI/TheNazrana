@@ -417,9 +417,6 @@ namespace SharedModel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
@@ -435,8 +432,6 @@ namespace SharedModel.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
@@ -514,11 +509,24 @@ namespace SharedModel.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CouponId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<float>("Discount")
+                        .HasColumnType("real");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<float>("SubTotal")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Total")
+                        .HasColumnType("real");
 
                     b.Property<string>("User")
                         .HasColumnType("nvarchar(max)");
@@ -527,7 +535,37 @@ namespace SharedModel.Migrations
 
                     b.HasIndex("AddressId");
 
+                    b.HasIndex("CouponId");
+
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("SharedModel.Servers.OrderEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderEvents");
                 });
 
             modelBuilder.Entity("SharedModel.Servers.Orderitem", b =>
@@ -538,6 +576,9 @@ namespace SharedModel.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
                     b.Property<int>("FeedbackId")
                         .HasColumnType("int");
 
@@ -546,6 +587,9 @@ namespace SharedModel.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -566,6 +610,59 @@ namespace SharedModel.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("Captured")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Card")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ErrorCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ErrorMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Vpa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("bank")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("card_id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("currency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("upi_transaction_id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("wallet")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -588,6 +685,10 @@ namespace SharedModel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -601,11 +702,19 @@ namespace SharedModel.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("Sold")
                         .HasColumnType("bigint");
 
                     b.Property<long>("Stock")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("SubCategory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tags")
                         .IsRequired()
@@ -725,10 +834,6 @@ namespace SharedModel.Migrations
 
             modelBuilder.Entity("SharedModel.Servers.Keypair", b =>
                 {
-                    b.HasOne("SharedModel.Servers.Order", null)
-                        .WithMany("Events")
-                        .HasForeignKey("OrderId");
-
                     b.HasOne("SharedModel.Servers.Product", null)
                         .WithMany("Details")
                         .HasForeignKey("ProductId");
@@ -749,7 +854,22 @@ namespace SharedModel.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SharedModel.Servers.Coupon", "Coupon")
+                        .WithMany()
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
+
+                    b.Navigation("Coupon");
+                });
+
+            modelBuilder.Entity("SharedModel.Servers.OrderEvent", b =>
+                {
+                    b.HasOne("SharedModel.Servers.Order", null)
+                        .WithMany("Events")
+                        .HasForeignKey("OrderId");
                 });
 
             modelBuilder.Entity("SharedModel.Servers.Orderitem", b =>

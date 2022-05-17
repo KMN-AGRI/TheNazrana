@@ -34,9 +34,9 @@ namespace SharedModel.Repository
             => Claim(ClaimTypes.Email);
 
         public string Id()
-            => Claim(ClaimTypes.NameIdentifier)??
+            => "ad1e888b-a850-4000-a21d-d7c7753b11af"??Claim(ClaimTypes.NameIdentifier)??
             (accessor.HttpContext.Request.Cookies.TryGetValue("user_id",out var _id)
-            ?_id: "ad1e888b-a850-4000-a21d-d7c7753b11af");
+            ?_id: null);
 
         public string Name()
             => Claim(ClaimTypes.GivenName);

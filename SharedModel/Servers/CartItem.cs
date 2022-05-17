@@ -13,6 +13,7 @@ namespace SharedModel.Servers
 		{
 			this.Date = DateTime.UtcNow;
 			this.Product = product;
+			this.Status = Status.Active;
 			this.Quantity = quantity;
 			this.User = user;
 
