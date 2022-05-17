@@ -25,7 +25,7 @@ namespace SharedModel.Clients.MainSite
 
 	public class SearchProduct
 	{
-		public string Id { get; set; }
+		public int Id { get; set; }
 		public string brand { get; set; }
 		public string title { get; set; }
 		public string image { get; set; }

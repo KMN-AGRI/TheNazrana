@@ -42,7 +42,7 @@ namespace BackendApi.Controllers
 			resp.items = await query
 				.Select(s => new SearchProduct
 				{
-					Id=s.UId,
+					Id=s.Id,
 					brand=s.Brand,
 					mrp=s.Mrp,
 					price=s.Price,

@@ -11,7 +11,7 @@ namespace SharedModel.Repository
 	public interface ICartRepository
 	{
 		IEnumerable<CartItem> getItems();
-		bool validateStock(string productId, int stock,int? id=null);
+		bool validateStock(int productId, int stock,int? id=null);
 		CartItem getItem(int id);
 		ApiResponse addToCart(ClientCart client);
 		ApiResponse removeCart(int id);
@@ -35,14 +35,14 @@ namespace SharedModel.Repository
 
 
 
-		public bool validateStock(string productId, int stock,int? id)
+		public bool validateStock(int productId, int stock,int? id)
 		{
 			int newStock = stock;
 
 			if (id.HasValue)
 				newStock += getItem(id.Value)?.Quantity??0;
 
-			var product = context.Products.SingleOrDefault(s=>s.UId==productId);
+			var product = context.Products.SingleOrDefault(s=>s.Id==productId);
 
 			if (product.Stock <= newStock)
 				return false;
@@ -55,7 +55,7 @@ namespace SharedModel.Repository
 		public ApiResponse addToCart(ClientCart client)
 		{
 			var cart = client.id.HasValue ? getItem(client.id.Value) :
-				new CartItem(context.Products.SingleOrDefault(s=>s.UId==client.productId), (int)client.quantity,userRepository.Id());
+				new CartItem(context.Products.SingleOrDefault(s=>s.Id==client.productId), (int)client.quantity,userRepository.Id());
 
 
 			if (client.id.HasValue)

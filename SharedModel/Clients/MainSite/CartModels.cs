@@ -7,7 +7,7 @@ namespace SharedModel.Clients.MainSite
 	{
 		public int? id { get; set; }
 		[Required(ErrorMessage ="Product cannot be empty")]
-		public string productId { get; set; }
+		public int productId { get; set; }
 		public uint quantity { get; set; }
 
 	}
