@@ -14,6 +14,7 @@ namespace SharedModel.Servers
 		public float SubTotal { get; set; }
 		public float Total { get; set; }
 		public float Discount { get; set; }
+		public Payment? Payment { get; set; }
 		public DateTime Date { get; set; }
 		public Status Status { get; set; }
 		public Address? Address { get; set; }

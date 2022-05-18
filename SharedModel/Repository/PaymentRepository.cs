@@ -8,7 +8,7 @@ namespace SharedModel.Repository
 {
 	public interface IPaymentRepository
 	{
-		PaymentResponse createOrder();
+		SharedModel.Servers.Payment createPayment(float amount);
         Task<ApiResponse> confirmOrder(ConfirmPayment confirm);
 	}
 
@@ -54,13 +54,14 @@ namespace SharedModel.Repository
 
     
 
-        public PaymentResponse createOrder()
+        public SharedModel.Servers.Payment createPayment(float amount)
 		{
             Random randomObj = new Random();
             string transactionId = randomObj.Next(10000000, 100000000).ToString();
+
             RazorpayClient client = new RazorpayClient(Settings.paymentKeyId,Settings.paymentSecretId);
             Dictionary<string, object> options = new Dictionary<string, object>();
-            options.Add("amount", 100 * 100);  // Amount will in paise
+            options.Add("amount", 100 * amount);  // Amount will in paise
             options.Add("receipt", transactionId);
             options.Add("currency", "INR");
             options.Add("payment_capture", "0"); // 1 - automatic  , 0 - manual
@@ -68,15 +69,14 @@ namespace SharedModel.Repository
             Order orderResponse = client.Order.Create(options);
             string orderId = orderResponse["id"].ToString();
             // Create order model for return on view
-            return new PaymentResponse
+            return new SharedModel.Servers.Payment()
             {
-                id = orderResponse.Attributes["id"],
-                key = Settings.paymentKeyId,
-                amount = 100,
-                email="logoutrd@gmail.com",
-                currency = "INR",
-                name="logoutd"
+                Date = DateTime.UtcNow,
+                Amount = amount,
+                Status = "uncaptured",
+                Razorpay_Id = orderResponse.Attributes["id"],
             };
+            
         }
 	}
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SharedModel.Clients.Shared;
 using SharedModel.Contexts;
+using SharedModel.Helpers;
 using SharedModel.Servers;
 using SharedModel.Services;
 
@@ -11,7 +12,7 @@ namespace SharedModel.Repository
 	{
 		Task<ApiResponse> createOrder();
 		Task<ApiResponse> completeOrder(string id);
-		Task<Order> getOrderById(string id);
+		Task<object> getOrderById(string id);
 	}
 
 
@@ -20,14 +21,16 @@ namespace SharedModel.Repository
 		private readonly IUserRepository userRepository;
 		private readonly MainContext context;
 		private readonly IMailService mail;
+		private readonly IPaymentRepository paymentRepository;
 		private readonly IUserRepository user;
 
-		public OrderRepository(MainContext context, IMailService mail, IUserRepository user, IUserRepository userRepository)
+		public OrderRepository(MainContext context, IMailService mail, IUserRepository user, IUserRepository userRepository, IPaymentRepository paymentRepository)
 		{
 			this.context = context;
 			this.mail = mail;
 			this.user = user;
 			this.userRepository = userRepository;
+			this.paymentRepository = paymentRepository;
 		}
 
 		public async Task<ApiResponse> completeOrder(string id)
@@ -36,9 +39,9 @@ namespace SharedModel.Repository
 			if (order == null)
 				return new ApiResponse("Invalid Order Found");
 
-			order.Status = Status.Active;
-			order.Date = DateTime.UtcNow;
-			mail.orderConfirmation(order.Address.Email ?? user.Email(), order);
+			//order.Status = Status.Active;
+			//order.Date = DateTime.UtcNow;
+			//mail.orderConfirmation(order.Address.Email ?? user.Email(), order);
 			return new ApiResponse("Order Confirmed Successfully", true, order);
 
 		}
@@ -62,7 +65,6 @@ namespace SharedModel.Repository
 
 
 			var order = new Order();
-
 			order.Id = Extensions.UtilityExtension.generateId(8);
 			order.Date = DateTime.UtcNow;
 			order.User = userRepository.Id();
@@ -78,26 +80,46 @@ namespace SharedModel.Repository
 			order.SubTotal = order.Items.Sum(s => s.Amount * s.Quantity);
 			order.Total = order.SubTotal - order.Discount;
 			order.Status = Status.Pending;
+			order.Payment = paymentRepository.createPayment(order.Total);
+
 			context.Orders.Add(order);
 			await context.SaveChangesAsync();
 			return new ApiResponse("Continue With Payment", true, new
 			{
 				order.Id,
-				order.Total,
-				order.SubTotal,
-				order.Discount
 			});
 
 
 			
 		}
 
-		public Task<Order> getOrderById(string id)
-			=> context.Orders
-				.Include(s => s.Items)
-				.ThenInclude(s => s.Product)
-				.Include(s => s.Address)
-				.SingleOrDefaultAsync(s => s.Id == id);
+		public async Task<object> getOrderById(string id)
+			=> await context.Orders
+			.Select(s => new
+			{
+				s.Id,
+				Items = s.Items.Select(i => new
+				{
+					Product = new
+					{
+						i.Product.Title,
+						Image = i.Product.Medias.Select(k => Settings.imageKitUrl + k.ServerName).FirstOrDefault(),
+
+					},
+					i.Amount,
+					i.Quantity
+				}),
+				Payment = new
+				{
+					s.Payment.Razorpay_Id,
+					Key = Settings.paymentKeyId,
+
+				},
+				s.Total,
+				s.SubTotal,
+				s.Discount
+
+			}).SingleOrDefaultAsync(s => s.Id == id);
 	}
 }
 

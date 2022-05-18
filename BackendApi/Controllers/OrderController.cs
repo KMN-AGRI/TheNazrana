@@ -19,6 +19,10 @@ namespace BackendApi.Controllers
 			this.orderRepository = orderRepository;
 		}
 
+		[HttpGet("{id}")]
+		public async Task<IActionResult> Index(string id)
+			=> Ok(await orderRepository.getOrderById(id));
+
 		[HttpPost]
 		public async Task<IActionResult> Index()
 			=> Ok(await orderRepository.createOrder());

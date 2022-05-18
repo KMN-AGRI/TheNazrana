@@ -11,6 +11,7 @@ namespace SharedModel.Servers
 
 		[Key]
 		public int Id { get; set; }
+		public string Razorpay_Id { get; set; }
 		public DateTime? Date { get; set; }
 		public float Amount { get; set; }
 		public string Method { get; set; }
