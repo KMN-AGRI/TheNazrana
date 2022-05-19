@@ -19,12 +19,12 @@ namespace BackendApi.Controllers
 		{
 			this.repository = repository;
 		}
-        [HttpGet]
-		// GET: /<controller>/
-		public IActionResult Index()
-        {
-            return View(repository.createOrder());
-        }
+  //      [HttpGet]
+		//// GET: /<controller>/
+		//public IActionResult Index()
+  //      {
+  //          return View(repository.createOrder());
+  //      }
 
         [HttpPost]
         public async Task<IActionResult> Index([FromForm] ConfirmPayment confirm)
