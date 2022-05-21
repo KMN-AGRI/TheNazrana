@@ -7,6 +7,18 @@ namespace SharedModel.Servers
 	{
 		public Payment()
 		{
+			this.card_id = "";
+			this.Card = "";
+			this.ErrorCode = "";
+			this.ErrorMessage = "";
+			this.currency = "";
+			this.upi_transaction_id = "";
+			this.wallet = "";
+			this.bank = "";
+			this.Status = "";
+			this.Vpa = "";
+			this.Method = "";
+
 		}
 
 		[Key]
