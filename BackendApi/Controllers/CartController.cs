@@ -31,7 +31,7 @@ namespace BackendApi.Controllers
 			=> Ok(repository.addToCart(client));
 
 
-		[HttpDelete]
+		[HttpPost("Remove/{id}")]
 		public IActionResult Remove(int id)
 			=> Ok(repository.removeCart(id));
 

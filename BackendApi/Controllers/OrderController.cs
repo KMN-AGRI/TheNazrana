@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SharedModel.Clients.MainSite;
 using SharedModel.Repository;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -26,6 +27,10 @@ namespace BackendApi.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Index()
 			=> Ok(await orderRepository.createOrder());
+
+		[HttpPost("Confirm/{id}")]
+		public async Task<IActionResult> Confirm(string id, [FromForm] ConfirmOrder confirm)
+			=> Ok(await orderRepository.completeOrder(id, confirm));
 
 
 	}

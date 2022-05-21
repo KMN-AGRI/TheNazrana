@@ -9,25 +9,15 @@ namespace SharedModel.Repository
 	public interface IPaymentRepository
 	{
 		SharedModel.Servers.Payment createPayment(float amount);
-        Task<ApiResponse> confirmOrder(ConfirmPayment confirm);
+        bool verifyPayment(string paymentId);
 	}
 
 	public class PaymentRepository:IPaymentRepository
 	{
-        private readonly IOrderRepository orderRepository;
-		public PaymentRepository(IOrderRepository orderRepository)
-		{
-			this.orderRepository = orderRepository;
-		}
-
-		public Task<ApiResponse> confirmOrder(ConfirmPayment confirm)
+		public bool verifyPayment(string paymentId)
 		{
             try
             {
-                string paymentId = confirm.rzp_paymentid;
-
-                // This is orderId
-                //string orderId = confirm.rzp_orderid;
 
                 RazorpayClient client = new RazorpayClient(Settings.paymentKeyId, Settings.paymentSecretId);
 
@@ -39,17 +29,15 @@ namespace SharedModel.Repository
                 Payment paymentCaptured = payment.Capture(options);
                 string amt = paymentCaptured.Attributes["amount"];
                 var status = paymentCaptured.Attributes["status"];//captured
-                if(status== "captured")
-                return orderRepository.completeOrder(confirm.rzp_orderid);
-                return Task.FromResult( new ApiResponse("Payment Failed"));
+                return status == "captured";
 
                 //return ;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                
             }
-
+            return false;
         }
 
     

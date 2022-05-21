@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using SharedModel.Clients.MainSite;
 using SharedModel.Clients.Shared;
 using SharedModel.Contexts;
 using SharedModel.Helpers;
@@ -11,7 +12,7 @@ namespace SharedModel.Repository
 	public interface IOrderRepository
 	{
 		Task<ApiResponse> createOrder();
-		Task<ApiResponse> completeOrder(string id);
+		Task<ApiResponse> completeOrder(string id,ConfirmOrder confirm);
 		Task<object> getOrderById(string id);
 	}
 
@@ -33,12 +34,13 @@ namespace SharedModel.Repository
 			this.paymentRepository = paymentRepository;
 		}
 
-		public async Task<ApiResponse> completeOrder(string id)
+		public async Task<ApiResponse> completeOrder(string id, ConfirmOrder confirm)
 		{
 			var order = await getOrderById(id);
 			if (order == null)
 				return new ApiResponse("Invalid Order Found");
-
+			if (!paymentRepository.verifyPayment(confirm.PaymentId))
+				return new ApiResponse("Payment Failed");
 			//order.Status = Status.Active;
 			//order.Date = DateTime.UtcNow;
 			//mail.orderConfirmation(order.Address.Email ?? user.Email(), order);
