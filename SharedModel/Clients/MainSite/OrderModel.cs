@@ -1,4 +1,6 @@
 ﻿using System;
+using SharedModel.Servers;
+
 namespace SharedModel.Clients.MainSite
 {
 	public class OrderModel
@@ -11,6 +13,7 @@ namespace SharedModel.Clients.MainSite
 	public class ConfirmOrder
 	{
 		public string PaymentId { get; set; }
+		public Address Address { get; set; }
 	}
 }
 

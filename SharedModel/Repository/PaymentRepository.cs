@@ -9,27 +9,34 @@ namespace SharedModel.Repository
 	public interface IPaymentRepository
 	{
 		SharedModel.Servers.Payment createPayment(float amount);
-        bool verifyPayment(string paymentId);
+        bool verifyPayment(SharedModel.Servers.Payment payment);
 	}
 
 	public class PaymentRepository:IPaymentRepository
 	{
-		public bool verifyPayment(string paymentId)
+		public bool verifyPayment(SharedModel.Servers.Payment payment)
 		{
             try
             {
 
                 RazorpayClient client = new RazorpayClient(Settings.paymentKeyId, Settings.paymentSecretId);
 
-                Payment payment = client.Payment.Fetch(paymentId);
+                Payment _payment = client.Payment.Fetch(payment.Razorpay_Id);
 
                 // This code is for capture the payment 
                 Dictionary<string, object> options = new Dictionary<string, object>();
-                options.Add("amount", payment.Attributes["amount"]);
-                Payment paymentCaptured = payment.Capture(options);
+                options.Add("amount", _payment.Attributes["amount"]);
+                Payment paymentCaptured = _payment.Capture(options);
                 string amt = paymentCaptured.Attributes["amount"];
                 var status = paymentCaptured.Attributes["status"];//captured
-                return status == "captured";
+
+                if(status == "captured")
+				{
+                    payment.card_id = paymentCaptured.Attributes["card_id"];
+                    payment.upi_transaction_id = paymentCaptured.Attributes["card_id"];
+                    return true;
+
+                }
 
                 //return ;
             }

@@ -12,7 +12,7 @@ namespace SharedModel.Repository
 	public interface IOrderRepository
 	{
 		Task<ApiResponse> createOrder();
-		Task<ApiResponse> completeOrder(string id,ConfirmOrder confirm);
+		Task<ApiResponse> completeOrder(string id,Address address);
 		Task<object> getOrderById(string id);
 	}
 
@@ -34,15 +34,48 @@ namespace SharedModel.Repository
 			this.paymentRepository = paymentRepository;
 		}
 
-		public async Task<ApiResponse> completeOrder(string id, ConfirmOrder confirm)
+		public async Task<ApiResponse> completeOrder(string id, Address address)
 		{
-			var order = await getOrderById(id);
+			var order = await context
+				.Orders
+				.Include(s=>s.Address)
+				.Include(s => s.Payment)
+				.Include(s => s.Items)
+				.ThenInclude(s => s.Product)
+				.SingleOrDefaultAsync(s => s.Id == id);
 			if (order == null)
 				return new ApiResponse("Invalid Order Found");
-			if (!paymentRepository.verifyPayment(confirm.PaymentId))
+			if (!paymentRepository.verifyPayment(order.Payment))
 				return new ApiResponse("Payment Failed");
-			//order.Status = Status.Active;
-			//order.Date = DateTime.UtcNow;
+
+
+			foreach(var item in order.Items)
+			{
+				var cartItem = await context.CartItems
+					.FirstOrDefaultAsync(s => s.Product.Id == item.Product.Id & s.Status == Status.Active);
+
+				if(cartItem!=null)
+				{
+					cartItem.Status = Status.Completed;
+					context.CartItems.Update(cartItem);
+				}	
+
+				item.Product.Stock--;
+			}
+			order.Events = new List<OrderEvent>()
+			{
+				new OrderEvent(Events.Ordered,true),
+				new OrderEvent(Events.Shipped),
+				new OrderEvent(Events.In_Transit),
+				new OrderEvent(Events.Delivered),
+				new OrderEvent(Events.Completed),
+			};
+
+			order.Status = Status.Active;
+			order.Address = address;
+			order.Date = DateTime.UtcNow;
+			context.Orders.Update(order);
+			await context.SaveChangesAsync();
 			//mail.orderConfirmation(order.Address.Email ?? user.Email(), order);
 			return new ApiResponse("Order Confirmed Successfully", true, order);
 
