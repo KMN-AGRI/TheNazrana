@@ -12,7 +12,7 @@ namespace SharedModel.Repository
 	public interface IOrderRepository
 	{
 		Task<ApiResponse> createOrder();
-		Task<ApiResponse> completeOrder(string id,Address address);
+		Task<ApiResponse> completeOrder(string id,string paymentId,Address address);
 		Task<object> getOrderById(string id);
 	}
 
@@ -34,7 +34,7 @@ namespace SharedModel.Repository
 			this.paymentRepository = paymentRepository;
 		}
 
-		public async Task<ApiResponse> completeOrder(string id, Address address)
+		public async Task<ApiResponse> completeOrder(string id,string paymentId, Address address)
 		{
 			var order = await context
 				.Orders
@@ -45,7 +45,7 @@ namespace SharedModel.Repository
 				.SingleOrDefaultAsync(s => s.Id == id);
 			if (order == null)
 				return new ApiResponse("Invalid Order Found");
-			if (!paymentRepository.verifyPayment(order.Payment))
+			if (!paymentRepository.verifyPayment(order.Payment,paymentId))
 				return new ApiResponse("Payment Failed");
 
 
