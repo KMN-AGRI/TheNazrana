@@ -31,12 +31,12 @@ namespace BackendApi.Controllers
 			=> Ok(await orderRepository.createOrder());
 
 		[HttpPost("Confirm/{id}/{paymentId}")]
-		public async Task<IActionResult> Confirm(string id,string paymentId,[FromForm] Address address)
+		public async Task<IActionResult> Confirm(string id,string paymentId,[FromBody] Address address)
 			=> Ok(await orderRepository.completeOrder(id,paymentId, address));
 
-		[HttpGet("Pay/{id}")]
-		public async Task<IActionResult> Pay(string id)
-			=> Ok(paymentRepository.verifyPayment(null, id));
+		//[HttpGet("Pay/{id}")]
+		//public async Task<IActionResult> Pay(string id)
+		//	=> Ok(paymentRepository.verifyPayment(null, id));
 
 	}
 }
