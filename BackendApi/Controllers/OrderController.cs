@@ -15,10 +15,11 @@ namespace BackendApi.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderRepository orderRepository;
-
-		public OrderController(IOrderRepository orderRepository)
+		private readonly IPaymentRepository paymentRepository;
+		public OrderController(IOrderRepository orderRepository, IPaymentRepository paymentRepository)
 		{
 			this.orderRepository = orderRepository;
+			this.paymentRepository = paymentRepository;
 		}
 
 		[HttpGet("{id}")]
@@ -33,6 +34,9 @@ namespace BackendApi.Controllers
 		public async Task<IActionResult> Confirm(string id,string paymentId,[FromForm] Address address)
 			=> Ok(await orderRepository.completeOrder(id,paymentId, address));
 
+		//[HttpGet("Pay/{id}")]
+		//public async Task<IActionResult> Pay(string id)
+		//	=> Ok(paymentRepository.verifyPayment(null, id));
 
 	}
 }

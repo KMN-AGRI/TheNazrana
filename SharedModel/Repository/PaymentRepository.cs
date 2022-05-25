@@ -23,17 +23,12 @@ namespace SharedModel.Repository
 
                 Payment _payment = client.Payment.Fetch(paymentId);
 
-                // This code is for capture the payment 
-                Dictionary<string, object> options = new Dictionary<string, object>();
-                options.Add("amount", _payment.Attributes["amount"]);
-                Payment paymentCaptured = _payment.Capture(options);
-                string amt = paymentCaptured.Attributes["amount"];
-                var status = paymentCaptured.Attributes["status"];//captured
+                var status = _payment.Attributes["status"];//captured
 
                 if(status == "captured")
 				{
-                    payment.card_id = paymentCaptured.Attributes["card_id"];
-                    payment.upi_transaction_id = paymentCaptured.Attributes["card_id"];
+                    payment.card_id = _payment.Attributes["card_id"];
+                    payment.upi_transaction_id = _payment.Attributes["card_id"];
                     return true;
 
                 }
