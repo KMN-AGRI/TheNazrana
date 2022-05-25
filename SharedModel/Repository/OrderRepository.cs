@@ -70,7 +70,7 @@ namespace SharedModel.Repository
 				new OrderEvent(Events.Delivered),
 				new OrderEvent(Events.Completed),
 			};
-
+			address.User = userRepository.Id();
 			order.Status = Status.Active;
 			order.Address = address;
 			order.Date = DateTime.UtcNow;
