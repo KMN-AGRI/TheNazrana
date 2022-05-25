@@ -23,6 +23,11 @@ namespace SharedModel.Repository
 
                 Payment _payment = client.Payment.Fetch(paymentId);
 
+                //// This code is for capture the payment 
+                //Dictionary<string, object> options = new Dictionary<string, object>();
+                //options.Add("amount", _payment.Attributes["amount"]);
+                //Payment paymentCaptured = _payment.Capture(options);
+                //string amt = paymentCaptured.Attributes["amount"];
                 var status = _payment.Attributes["status"];//captured
 
                 if(status == "captured")
@@ -54,7 +59,7 @@ namespace SharedModel.Repository
             options.Add("amount", 100 * amount);  // Amount will in paise
             options.Add("receipt", transactionId);
             options.Add("currency", "INR");
-            options.Add("payment_capture", "0"); // 1 - automatic  , 0 - manual
+            options.Add("payment_capture", "1"); // 1 - automatic  , 0 - manual
             //options.Add("notes", "-- You can put any notes here --");
             Order orderResponse = client.Order.Create(options);
             string orderId = orderResponse["id"].ToString();
