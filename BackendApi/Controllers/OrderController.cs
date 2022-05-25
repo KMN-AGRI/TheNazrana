@@ -34,9 +34,9 @@ namespace BackendApi.Controllers
 		public async Task<IActionResult> Confirm(string id,string paymentId,[FromForm] Address address)
 			=> Ok(await orderRepository.completeOrder(id,paymentId, address));
 
-		//[HttpGet("Pay/{id}")]
-		//public async Task<IActionResult> Pay(string id)
-		//	=> Ok(paymentRepository.verifyPayment(null, id));
+		[HttpGet("Pay/{id}")]
+		public async Task<IActionResult> Pay(string id)
+			=> Ok(paymentRepository.verifyPayment(null, id));
 
 	}
 }
