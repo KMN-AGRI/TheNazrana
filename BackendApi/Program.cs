@@ -30,20 +30,21 @@ services.AddIdentity<Appuser, IdentityRole>(s =>
 
 services.ConfigureApplicationCookie(options =>
 {
+
     // Cookie settings
-    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
-    options.Cookie.Name = "_auth";
-    options.Cookie.Domain = ".thenazrana.in"; // ".mydomain.com"
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.Name = "deals_auth";
 
+        options.Cookie.Domain = ".thenazrana.in"; // ".mydomain.com"
 
-    options.Cookie.HttpOnly = true;
+    options.Cookie.HttpOnly = false;
 
     options.ExpireTimeSpan = TimeSpan.FromDays(5 * 30);
     options.SlidingExpiration = true;
     //options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
 
     options.LoginPath = new PathString("/Login");
-    options.LogoutPath = new PathString("/Signout");
+    options.LogoutPath = new PathString("/Singout");
     options.AccessDeniedPath = new PathString("/Account/Login");
 
 
