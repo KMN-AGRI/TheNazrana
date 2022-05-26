@@ -50,6 +50,9 @@ services.ConfigureApplicationCookie(options =>
 
 });
 
+services.AddAuthentication();
+
+
 builder.Services.AddControllersWithViews();
 
 
@@ -64,10 +67,13 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 app.UseCors(s =>
 {
+    s.SetIsOriginAllowed(s => true);
     s.AllowAnyHeader();
     s.AllowAnyMethod();
-    s.AllowAnyOrigin();
+    //s.AllowAnyOrigin();
+    s.AllowCredentials();
 });
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()||true)
 {
