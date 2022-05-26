@@ -34,9 +34,8 @@ services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.Name = "__auth";
 
-    ////options.Cookie.Domain = ".localhost";
-    //if (!env.IsDevelopment())
-    //    options.Cookie.Domain = ".dealsonopenbox.com"; // ".mydomain.com"
+    options.Cookie.Domain = ".thenazrana.in"; // ".mydomain.com"
+
 
     options.Cookie.HttpOnly = false;
 
