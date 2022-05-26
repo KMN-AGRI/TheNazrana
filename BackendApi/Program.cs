@@ -33,7 +33,6 @@ services.ConfigureApplicationCookie(options =>
     // Cookie settings
     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
     options.Cookie.Name = "__auth";
-    options.Cookie.Domain = "example.com";
     options.Cookie.Domain = "thenazrana.in"; // ".mydomain.com"
 
 
@@ -77,7 +76,7 @@ if (app.Environment.IsDevelopment()||true)
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
