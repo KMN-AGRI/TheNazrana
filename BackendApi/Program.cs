@@ -31,10 +31,10 @@ services.AddIdentity<Appuser, IdentityRole>(s =>
 services.ConfigureApplicationCookie(options =>
 {
     // Cookie settings
-    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
     options.Cookie.Name = "__auth";
-
-    options.Cookie.Domain = ".thenazrana.in"; // ".mydomain.com"
+    options.Cookie.Domain = "example.com";
+    options.Cookie.Domain = "thenazrana.in"; // ".mydomain.com"
 
 
     options.Cookie.HttpOnly = false;
