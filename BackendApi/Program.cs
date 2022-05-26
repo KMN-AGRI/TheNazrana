@@ -33,7 +33,7 @@ services.ConfigureApplicationCookie(options =>
 
     // Cookie settings
     options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.Name = "deals_auth";
+    options.Cookie.Name = "nazAuth";
 
         options.Cookie.Domain = ".thenazrana.in"; // ".mydomain.com"
 
