@@ -32,11 +32,11 @@ services.ConfigureApplicationCookie(options =>
 {
     // Cookie settings
     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
-    options.Cookie.Name = "__auth";
-    options.Cookie.Domain = "thenazrana.in"; // ".mydomain.com"
+    options.Cookie.Name = "_auth";
+    options.Cookie.Domain = ".thenazrana.in"; // ".mydomain.com"
 
 
-    options.Cookie.HttpOnly = false;
+    options.Cookie.HttpOnly = true;
 
     options.ExpireTimeSpan = TimeSpan.FromDays(5 * 30);
     options.SlidingExpiration = true;
