@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SharedModel.Contexts;
 using SharedModel.Helpers;
@@ -25,8 +26,8 @@ services.AddIdentity<Appuser, IdentityRole>(s =>
     s.User.RequireUniqueEmail = true;
     s.SignIn.RequireConfirmedEmail = true;
 })
-                .AddEntityFrameworkStores<MainContext>()
-                .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<MainContext>()
+.AddDefaultTokenProviders();
 
 services.ConfigureApplicationCookie(options =>
 {
@@ -53,7 +54,11 @@ services.ConfigureApplicationCookie(options =>
 services.AddAuthentication();
 
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(opts =>
+{
+    var enumConverter = new JsonStringEnumConverter();
+    opts.JsonSerializerOptions.Converters.Add(enumConverter);
+});
 
 
 services.AddDbContextPool<MainContext>(s => s.UseSqlServer(Settings.databaseString));

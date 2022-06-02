@@ -81,7 +81,7 @@ namespace BackendApi.Controllers
 						i.Feedback
 					})
 				})
-				.Where(s => s.User == userRepository.Id()));
+				.Where(s => s.User == userRepository.Id()&s.Status!=Status.Pending));
 
 		[HttpGet("/Track/{id}")]
 		public IActionResult trackOrder(string id)
