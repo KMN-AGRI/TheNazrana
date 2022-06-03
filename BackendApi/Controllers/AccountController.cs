@@ -42,6 +42,8 @@ namespace BackendApi.Controllers
 
 			user.Name = update.Name;
 			user.DOB = update.DOB;
+			if (update.Image != null)
+				user.ImageUri = uploadImage(update.Image);
 			context.AppUsers.Update(user);
 			await context.SaveChangesAsync();
 			return Ok(new ApiResponse("Profile Update Successfully", true, new
@@ -108,6 +110,27 @@ namespace BackendApi.Controllers
 						 i.Feedback
 					 }),
 			}).SingleOrDefault(s=>s.Id==id));
+
+		private string uploadImage(IFormFile file)
+		{
+			string path = "/profiles/" + String.Join("", Guid.NewGuid().ToString().Take(8))+"-" +file.FileName;
+			Azure.Storage.Blobs.BlobClient blobClient = new Azure.Storage.Blobs.BlobClient(
+				connectionString: Settings.blobConnection,
+				blobContainerName: "thenazrana",
+				blobName: path);
+			blobClient.Upload(GetStream(file), true);
+			return Settings.imageKitUrl+ path;
+
+		}
+
+		private Stream GetStream(IFormFile file)
+		{
+			var ms = new MemoryStream();
+			file.CopyTo(ms);
+			ms.Seek(0, SeekOrigin.Begin);
+			return ms;
+		}
+
 
 	}
 }

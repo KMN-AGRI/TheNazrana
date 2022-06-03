@@ -8,6 +8,7 @@ namespace SharedModel.Helpers
         static public string baseUrl = "https://api.thenazrana.in";
         static public string frontendUrl = "https://thenazrana.in";
 
+        static public string blobConnection = "DefaultEndpointsProtocol=https;AccountName=advasset;AccountKey=vMn7ZVSWVi0NbY7T2X52MaS7f/Qwe2zqaNLDBHvbxGdJY9zyJVV9DJtkPuHJtStHOWucamsjk4T7rHAqTOuSJg==;EndpointSuffix=core.windows.net";
 
         #region MailCredential
         static public string MailServer = "mail.dealsonopenbox.com";
