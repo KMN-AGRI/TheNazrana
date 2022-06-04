@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using SharedModel.Clients.MainSite;
 using SharedModel.Helpers;
@@ -57,6 +58,12 @@ namespace BackendApi.Controllers
             => await repository.verify(verify) ? Redirect(Settings.frontendUrl + "/signin") :
             BadRequest("Invalid Token");
 
+        [HttpGet("signOut")]
+        public async Task<IActionResult> signOut()
+		{
+            await HttpContext.SignOutAsync();
+            return Redirect("https://thenazrana.in");
+		}
 
 
     }
