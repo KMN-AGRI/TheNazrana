@@ -61,7 +61,7 @@ namespace BackendApi.Controllers
         [HttpGet("signOut")]
         public async Task<IActionResult> signOut()
 		{
-            await HttpContext.SignOutAsync();
+            await repository.signOut();
             return Redirect("https://thenazrana.in");
 		}
 

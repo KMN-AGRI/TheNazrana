@@ -15,6 +15,7 @@ namespace SharedModel.Repository
 		Task<ApiResponse> forgot(ForgotModel forgot);
 		Task<ApiResponse> reset(ResetModel reset);
 		Task<bool> verify(VerifyToken verify);
+		Task signOut();
 	}
 
 
@@ -114,6 +115,11 @@ namespace SharedModel.Repository
 
 			return new ApiResponse("Password reset successfully", true);
 
+		}
+
+		public async Task signOut()
+		{
+			await signInManager.SignOutAsync();
 		}
 
 		public async Task<bool> verify(VerifyToken verify)
