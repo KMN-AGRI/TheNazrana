@@ -91,13 +91,12 @@ namespace SharedModel.Repository
 		public ApiResponse removeCart(int id)
 		{
 			var cart = getItem(id);
-			if (cart!= null)
-			{
-				cart.Status = Status.Disabled;
-				context.CartItems.Update(cart);
-				context.SaveChanges();
-			}
-			
+			if (cart == null)
+				return new ApiResponse("Invalid Cart Id Sent", false, id);
+			cart.Status = Status.Disabled;
+			context.CartItems.Update(cart);
+			context.SaveChanges();
+
 
 			return new ApiResponse("Item Removed Successfully", true);
 		}

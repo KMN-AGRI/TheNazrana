@@ -25,8 +25,26 @@ namespace BackendApi.Controllers
 		public async Task<IActionResult> Index([FromBody]SearchRequest search)
 		{
 
-			var resp = new SearchResponse();			
-			var query = context.Products.AsQueryable();
+			var (price_min, price_max) = GetRange(search.priceRanges);
+			var (discount_min, discount_max) = GetRange(search.discountRanges);
+			var keyword = search.query;
+			var sort = search.sort;
+
+			var resp = new SearchResponse();
+			var query = context.Products.AsQueryable()
+				.Select(s => new SearchProduct
+				{
+					Id = s.Id,
+					brand = s.Brand,
+					mrp = s.Mrp,
+					price = s.Price,
+					sold=s.Sold,
+					date=s.Date,
+					description=s.Description,
+					discount = (s.Mrp - s.Price) / s.Mrp * 100,
+					title = s.Title,
+					image = s.Medias.Select(k => Settings.imageKitUrl + k.ServerName).FirstOrDefault()
+				});
 
 
 			search.page = search.page < 1 ? 1 : search.page;
@@ -34,22 +52,48 @@ namespace BackendApi.Controllers
 
 
 			if (!string.IsNullOrEmpty(search.query))
-				query = query.Where(s => s.Title.Contains(search.query) || s.Description.Contains(search.query));
+				query = query.Where(s => s.title.Contains(search.query) || s.description.Contains(search.query));
 
+			if (price_min.HasValue)
+				query = query.Where(s => s.price>=price_min.Value);
+
+			if (price_max.HasValue)
+				query = query.Where(s => s.price <= price_max.Value);
+
+			if (discount_min.HasValue)
+				query = query.Where(s => s.discount >= discount_min);
+
+			if (discount_max.HasValue)
+				query = query.Where(s => s.discount <= discount_max);
+
+
+			switch (sort)
+			{
+				case ResultOrder.PriceHighToLow:
+					query = query.OrderByDescending(x => x.price);
+					break;
+				case ResultOrder.PriceLowToHigh:
+					query = query.OrderBy(x => x.price);
+					break;
+				case ResultOrder.Latest:
+					query = query.OrderByDescending(x => x.date);
+					break;
+				case ResultOrder.DiscountHighToLow:
+					query = query.OrderByDescending(s => s.discount);
+					break;
+				case ResultOrder.DiscountLowToHigh:
+					query = query.OrderBy(s => s.discount);
+					break;
+				default:
+					query = query.OrderByDescending(x => x.sold);
+					break;
+
+			}
 
 
 			resp.total = await query.CountAsync();
 			resp.items = await query
-				.Select(s => new SearchProduct
-				{
-					Id=s.Id,
-					brand=s.Brand,
-					mrp=s.Mrp,
-					price=s.Price,
-					discount = (s.Mrp - s.Price) / s.Mrp * 100,
-					title=s.Title,
-					image = s.Medias.Select(k => Settings.imageKitUrl + k.ServerName).FirstOrDefault()
-				})
+				
 				.Skip(startingPosition).Take(12).ToListAsync();
 
 			resp.hasMore = resp.items.Count() == 12;
@@ -63,6 +107,18 @@ namespace BackendApi.Controllers
 
 
 			
+		}
+
+
+		private (int?, int?) GetRange(List<ItemRange> ranges)
+		{
+			if (ranges == null | ranges?.Count == 0)
+				return (null, null);
+
+			var min = ranges.Select(s => s.min).OrderBy(s => s).FirstOrDefault();
+			var max = ranges.Select(s => s.max).OrderByDescending(s => s).FirstOrDefault();
+			return (min, max);
+
 		}
 	}
 }

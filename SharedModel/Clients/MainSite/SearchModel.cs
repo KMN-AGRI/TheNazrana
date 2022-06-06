@@ -11,6 +11,7 @@ namespace SharedModel.Clients.MainSite
 		public List<ItemRange> discountRanges { get; set; } = new List<ItemRange>();
 		public List<ItemRange> priceRanges { get; set; } = new List<ItemRange>();
 		public int page { get; set; } = 1;
+		public ResultOrder sort { get; set; }
 	}
 
 	public class SearchResponse
@@ -31,6 +32,9 @@ namespace SharedModel.Clients.MainSite
 		public string image { get; set; }
 		public float discount { get; set; }
 		public float price { get; set; }
+		public string description { get; set; }
+		public uint sold { get; set; }
+		public DateTime date { get; set; }
 		public float mrp { get; set; }
 	}
 

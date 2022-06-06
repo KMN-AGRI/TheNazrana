@@ -33,3 +33,13 @@ public enum Events
 	Cancelled,
 	Completed
 }
+
+public enum ResultOrder
+{
+	Latest,
+	PriceHighToLow,
+	PriceLowToHigh,
+	DiscountHighToLow,
+	DiscountLowToHigh
+
+}
