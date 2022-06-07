@@ -1,5 +1,7 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
 using SharedModel.Clients.Shared;
+using SharedModel.Contexts;
 using SharedModel.Servers;
 using SharedModel.Services;
 
@@ -8,22 +10,31 @@ namespace SharedModel.Repository
 	public interface IAlertRepository
 	{
 
-		Task notifyOrder(Order order);
+		Task notifyOrder(string id);
 
 	}
 	public class AlertRepository: IAlertRepository
 	{
 		private readonly IHttpFactory httpFactory;
+		private readonly MainContext mainContext;
 
 
-
-		public AlertRepository(IHttpFactory httpFactory)
+		public AlertRepository(IHttpFactory httpFactory, MainContext mainContext)
 		{
 			this.httpFactory = httpFactory;
+			this.mainContext = mainContext;
 		}
 
-		public async Task notifyOrder(Order order)
+		public async Task notifyOrder(string id)
 		{
+			var order = mainContext.
+				Orders
+				.Include(s => s.Address)
+				.Include(s => s.Items)
+				.ThenInclude(s => s.Product)
+				.Include(s => s.Events)
+				.SingleOrDefault(s => s.Id == id);
+
 			var mostRecentStatus = order
 				.Events
 				.OrderByDescending(s => s.Date)
@@ -33,15 +44,13 @@ namespace SharedModel.Repository
 
 			var strMessage = getMessage(mostRecentStatus.Type);
 
-			var template = new TemplateMessage(order.Address.Mobile, new TemplateMessage.Template("", new List<TemplateMessage.Template.Component>()
+			var template = new TemplateMessage("91"+order.Address.Mobile, new TemplateMessage.Template("order", new List<TemplateMessage.Template.Component>()
 			{
 				new TemplateMessage.Template.Component(new List<TemplateMessage.Template.Component.Parameter>()
 				{
 					new TemplateMessage.Template.Component.Parameter(order.Address.Name),
-					new TemplateMessage.Template.Component.Parameter(order.Id),
-					new TemplateMessage.Template.Component.Parameter(getItems(order)),
+					new TemplateMessage.Template.Component.Parameter("#"+order.Id),
 					new TemplateMessage.Template.Component.Parameter(strMessage),
-					new TemplateMessage.Template.Component.Parameter("https://thenazrana.in")
 				})
 			}));
 
@@ -54,10 +63,10 @@ namespace SharedModel.Repository
 		{
 			switch(type)
 			{
-				case Events.Ordered:return "placed successfully";
-				case Events.Shipped:return "shipped";
-				case Events.In_Transit:return "travelling";
-				case Events.Delivered:return "delivered successfully";
+				case Events.Ordered:return "Placed successfully 🎉";
+				case Events.Shipped:return "Shipped at "+DateTime.Now.ToLongTimeString();
+				case Events.In_Transit:return "in Transit";
+				case Events.Delivered:return "Delivered Successfully 🎉";
 			}
 			return "";
 		}

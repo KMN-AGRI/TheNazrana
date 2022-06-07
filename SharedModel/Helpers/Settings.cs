@@ -25,9 +25,9 @@ namespace SharedModel.Helpers
 
 
         #region whatsappCredentials
-        static public string apiKey360 = "DbdZOrbLIrflezbLPuGG5jVPAK";
+        static public string apiKey360 = "HHFdSiFcPXItQWh0dfCBjkH1AK";
         static public string apiEndpoint = "https://waba.360dialog.io";
-        static public string nameSpace = "35905c33_372c_46e9_9f13_5f82dad3e610";
+        static public string nameSpace = "e99ab1db_c756_4b15_967b_5381a4ee36bd";
         #endregion
 
     }

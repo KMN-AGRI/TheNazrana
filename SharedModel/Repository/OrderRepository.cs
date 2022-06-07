@@ -24,14 +24,15 @@ namespace SharedModel.Repository
 		private readonly IMailService mail;
 		private readonly IPaymentRepository paymentRepository;
 		private readonly IUserRepository user;
-
-		public OrderRepository(MainContext context, IMailService mail, IUserRepository user, IUserRepository userRepository, IPaymentRepository paymentRepository)
+		private readonly IAlertRepository alertRepository;
+		public OrderRepository(MainContext context, IMailService mail, IUserRepository user, IUserRepository userRepository, IPaymentRepository paymentRepository, IAlertRepository alertRepository)
 		{
 			this.context = context;
 			this.mail = mail;
 			this.user = user;
 			this.userRepository = userRepository;
 			this.paymentRepository = paymentRepository;
+			this.alertRepository = alertRepository;
 		}
 
 		public async Task<ApiResponse> completeOrder(string id,string paymentId, Address address)
@@ -68,7 +69,6 @@ namespace SharedModel.Repository
 				new OrderEvent(Events.Shipped),
 				new OrderEvent(Events.In_Transit),
 				new OrderEvent(Events.Delivered),
-				new OrderEvent(Events.Completed),
 			};
 			address.User = userRepository.Id();
 			order.Status = Status.Active;
@@ -76,6 +76,7 @@ namespace SharedModel.Repository
 			order.Date = DateTime.UtcNow;
 			context.Orders.Update(order);
 			await context.SaveChangesAsync();
+			await alertRepository.notifyOrder(order.Id);
 			//mail.orderConfirmation(order.Address.Email ?? user.Email(), order);
 			return new ApiResponse("Order Confirmed Successfully", true, order);
 

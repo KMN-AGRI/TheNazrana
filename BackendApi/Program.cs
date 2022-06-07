@@ -12,12 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var services = builder.Services;
 services.AddCors();
+services.AddHttpClient<IHttpFactory, HttpFactory>();
+services.AddScoped<IHttpFactory, HttpFactory>();
 services.AddScoped<IAuthRepository, AuthRepository>();
 services.AddScoped<IMailService, MailService>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IPaymentRepository, PaymentRepository>();
 services.AddScoped<IOrderRepository, OrderRepository>();
 services.AddScoped<ICartRepository, CartRepository>();
+services.AddScoped<IAlertRepository, AlertRepository>();
 
 
 

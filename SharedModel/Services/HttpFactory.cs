@@ -12,7 +12,7 @@ namespace SharedModel.Services
 		Task<T> ExecuteRequest<T>(string _, object __);
 	}
 
-	public class HttpFactory
+	public class HttpFactory:IHttpFactory
 	{
 		private IHttpClientFactory httpClientFactory;
 		private readonly HttpClient wpClient;

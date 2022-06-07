@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SharedModel.Clients.Shared;
 using SharedModel.Contexts;
 using SharedModel.Helpers;
+using SharedModel.Repository;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,10 +17,11 @@ namespace BackendApi.Controllers
     public class AdminController : Controller
     {
         private readonly MainContext context;
-
-		public AdminController(MainContext context)
+		private readonly IAlertRepository alertRepository;
+		public AdminController(MainContext context, IAlertRepository alertRepository)
 		{
 			this.context = context;
+			this.alertRepository = alertRepository;
 		}
 
 		[HttpGet("products")]
@@ -88,17 +90,19 @@ namespace BackendApi.Controllers
 			var events = order.Events;
 
 			var nextEvent = events
-				.OrderByDescending(s => s.Type)
+				.OrderBy(s => s.Type)
 				.FirstOrDefault(s => s.Completed == false);
 
 			nextEvent.Completed = true;
 			nextEvent.Date = DateTime.UtcNow;
 
-			if (nextEvent.Type == Events.Completed)
+			if (nextEvent.Type == Events.Delivered)
 				order.Status = Status.Completed;
 
 			context.Orders.Update(order);
 			await context.SaveChangesAsync();
+			await alertRepository.notifyOrder(order.Id);
+
 			return Ok(new ApiResponse("Order Updated Successfully", true));
 
 
