@@ -36,54 +36,61 @@ namespace SharedModel.Repository
 
 
 
-		public bool validateStock(int productId, int stock,int? id)
+        public bool validateStock(int productId, int stock, int? id)
+        {
+            int newStock = stock;
+
+            if (id.HasValue)
+                newStock += getItem(id.Value)?.Quantity ?? 0;
+
+            var product = context.Products.SingleOrDefault(s => s.Id == productId);
+
+            if (product.Stock <= newStock)
+                return false;
+
+            return true;
+
+
+        }
+
+        public ApiResponse addToCart(ClientCart client)
 		{
-			int newStock = stock;
+			var product = context
+				.Products
+				.Find(client.productId);
 
-			if (id.HasValue)
-				newStock += getItem(id.Value)?.Quantity??0;
+			if (product == null)
+				return new ApiResponse("Invalid Product Sent");
 
-			var product = context.Products.SingleOrDefault(s=>s.Id==productId);
+			if (product.Stock < client.quantity)
+				return new ApiResponse("Oops! only " + product.Stock + " stock left");
 
-			if (product.Stock <= newStock)
-				return false;
+			if (client.quantity == 0)
+				return new ApiResponse("Qauntity should be greater than 0");
 
-			return true;
+			var existingCart = context.CartItems
+				.Where(s => s.User == userRepository.Id() & s.Status == Status.Active & s.Product.Id == client.productId)
+				.FirstOrDefault();
 
-
-		}
-
-		public ApiResponse addToCart(ClientCart client)
-		{
-			var cart = client.id.HasValue ? getItem(client.id.Value) :
-				null;
-
-
-			if (client.id.HasValue)
-			{
-				if (cart == null)
-					return new ApiResponse("Invalid Cart Id Sent");
-				cart.Quantity = (int)client.quantity;
-				context.CartItems.Update(cart);
-			}
+			if (existingCart == null)
+				context.CartItems.Add(new CartItem()
+				{
+					Date = DateTime.UtcNow,
+					Product = product,
+					Quantity = (int)client.quantity,
+					Status = Status.Active,
+					User = userRepository.Id()
+				});
 			else
-			{
-				var product = context.Products.SingleOrDefault(s => s.Id == client.productId);
-				if (product == null)
-					return new ApiResponse("Invalid Product Sent");
-
-				if (client.quantity == 0)
-					return new ApiResponse("Qauntity should be greater than 0");
-
-				cart= new CartItem(product, (int)client.quantity, userRepository.Id());
-
-				context.CartItems.Add(cart);
-
+            {
+				existingCart.Quantity = (int)client.quantity;
+				context.CartItems.Update(existingCart);
 			}
+
 
 			context.SaveChanges();
 
-			return new ApiResponse(client.id.HasValue ? "Cart updated successfully" : "Item Added to cart", true);
+			return new ApiResponse(existingCart!=null ? "Cart updated successfully" : "Item Added to cart", true);
 
 
 		}
