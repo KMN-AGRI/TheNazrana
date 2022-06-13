@@ -61,6 +61,7 @@ namespace BackendApi.Controllers
 					s.User,
 					s.Address,
 					s.Total,
+					s.Date,
 					s.SubTotal,
 					s.Discount,
 					s.Status,
@@ -77,6 +78,7 @@ namespace BackendApi.Controllers
 						i.Feedback
 					})
 				})
+				.OrderByDescending(s=>s.Date)
 				.Where(s => s.Status != Status.Pending));
 
 		[HttpPost("updateOrder/{id}")]
