@@ -13,7 +13,7 @@ namespace SharedModel.Helpers
         #region MailCredential
         static public string MailServer = "mail.dealsonopenbox.com";
         static public string MailUserName = "no-reply@dealsonopenbox.com";
-        static public string MailName = "Deals On OpenBox";
+        static public string MailName = "The Nazrana";
         static public string MailPassword = "bombom123/B@";
         static public int MailPort = 25;
         #endregion
