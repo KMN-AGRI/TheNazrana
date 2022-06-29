@@ -55,7 +55,7 @@ namespace BackendApi.Controllers
 
         [HttpGet("verify")]
         public async Task<IActionResult> verify([FromQuery] VerifyToken verify)
-            => await repository.verify(verify) ? Redirect(Settings.frontendUrl + "/signin") :
+            => await repository.verify(verify) ? Redirect(Settings.frontendUrl + "/login") :
             BadRequest("Invalid Token");
 
         [HttpGet("signOut")]
